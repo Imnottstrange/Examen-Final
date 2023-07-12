@@ -1,0 +1,93 @@
+from datetime import datetime
+
+lista_asientos = [i for i in range(1, 101)]
+lista_asientos_comprados = []
+ganancias_totales = 0
+
+def compra_entradas():
+    while True:
+        try:
+            cant = int(input("Ingrese la cantidad de entradas a comprar: "))
+            if cant < 1 or cant > 3:
+                print("La compra de entradas debe ser entre 1 y 3.")
+            else:
+                return cant
+        except ValueError:
+            print("ERROR!!!")
+
+def mostrar_ubicaciones_disponibles():
+    for i, asiento in enumerate(lista_asientos):
+        estado = "Disponible" if asiento not in [x[0] for x in lista_asientos_comprados] else "Vendido"
+        print(f"Asiento {asiento}: {estado}")
+
+def ver_listado_asistentes():
+    lista_asientos_comprados.sort(key=lambda x: x[1])
+    for asiento, rut in lista_asientos_comprados:
+        print(f"Asiento {asiento}: {rut}")
+
+def calcular_precio(asiento):
+    if asiento in range(1, 21):
+        return 120000
+    elif asiento in range(21, 51):
+        return 80000
+    elif asiento in range(51, 101):
+        return 50000
+
+def asignar_asiento(cant):
+    for _ in range(cant):
+        while True:
+            print("Ubicaciones disponibles:")
+            mostrar_ubicaciones_disponibles()
+            asiento = int(input("Escoja el asiento: "))
+            if asiento in lista_asientos:
+                rut = int(input("Ingrese el rut (sin guiones ni dígito verificador): "))
+                if len(str(rut)) != 8:
+                    print("RUT inválido. Debe tener 8 dígitos.")
+                elif any(rut == x[1] for x in lista_asientos_comprados):
+                    print("RUT ya registrado para otro asiento.")
+                else:
+                    precio = calcular_precio(asiento)
+                    lista_asientos_comprados.append((asiento, rut))
+                    lista_asientos.remove(asiento)
+                    global ganancias_totales
+                    ganancias_totales += precio
+                    print("Compra realizada correctamente.")
+                    break
+            else:
+                print("Asiento no disponible.")
+
+def mostrar_ganancias_totales():
+    print(f"Las ganancias totales son ${ganancias_totales}")
+
+def salir():
+    
+    print("¡Hasta luego!")
+    print("Fecha:12/07/2023")
+    print("nombre:Braulio andre valles sanchez")
+
+while True:
+    try:
+        print("----- Concierto Michael Jam -----")
+        print("1. Comprar entradas")
+        print("2. Mostrar ubicaciones disponibles")
+        print("3. Ver listado de asistentes")
+        print("4. Mostrar ganancias totales")
+        print("5. Salir")
+        opcion = int(input("Escoja la opción deseada: "))
+
+        if opcion == 1:
+            asignar_asiento(compra_entradas())
+        elif opcion == 2:
+            mostrar_ubicaciones_disponibles()
+        elif opcion == 3:
+            ver_listado_asistentes()
+        elif opcion == 4:
+            mostrar_ganancias_totales()
+        elif opcion == 5:
+            salir()
+            break
+        else:
+            print("Opción inválida. Intente nuevamente.")
+
+    except ValueError:
+        print("ERROR!!!")
